@@ -4,13 +4,14 @@
 #include <CSV_Parser.h>
 #include <math.h>
 
-const char* ssid = "badgersoft-iot";
-const char* password = "h4les0wen1234";
+const char* ssid = "SSID";
+const char* password = "WIFI_PWD";
 
-const char* mqtt_server = "data.b2-space.com";
-const char* mqtt_user = "mosquitto";
-const char* mqtt_pass = "B2Space!";
+const char* mqtt_server = "SERVER_IP_OR_NAME";
+const char* mqtt_user = "MQTT_USER";
+const char* mqtt_pass = "MQTT_PASS!";
 
+// set these to the observer location
 float refLat = 51.498;
 float refLong = -3.676;
 float refAlt = 200.0;
