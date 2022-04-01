@@ -3,6 +3,7 @@
 #include <PubSubClient.h>
 #include <CSV_Parser.h>
 #include <math.h>
+#include "gs-232b.hpp"
 
 #define RXD2 16
 #define TXD2 17
@@ -34,6 +35,8 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[255];
+
+GS232B gs232b;
 
 float calcEarthRadiusInMeters(float latitudeRadians)
 {
@@ -256,10 +259,11 @@ void callback(char* topic, byte* message, unsigned int length) {
     // but use angles based on subtraction.
     // Point A will be at x=radius, y=0, z=0.
     // Vector difference B-A will have dz = N/S component, dy = E/W component.
+    float azimuth = 0.0;
     vector8 br = rotateGlobe (payLoc, obsLoc, payPoint.radius, obsPoint.radius);
     if (br.z*br.z + br.y*br.y > 1.0e-6) {
         float theta = atan2(br.z, br.y) * 180.0 / PI;
-        float azimuth = 90.0 - theta;
+        azimuth = 90.0 - theta;
         if (azimuth < 0.0) {
             azimuth += 360.0;
         }
@@ -268,9 +272,9 @@ void callback(char* topic, byte* message, unsigned int length) {
         }
         Serial.print("Azimuth: ");
         Serial.println(azimuth);
-        Serial2.print(azimuth);
     }
 
+    float elevation = 0.0;
     vector8 bma = normalizeVectorDiff(payPoint, obsPoint);
     if (!bma.err) {
         // Calculate elevation, which is the angle above the horizon of B as seen from A.
@@ -281,14 +285,9 @@ void callback(char* topic, byte* message, unsigned int length) {
         
         Serial.print("Elevation: ");
         Serial.println(elevation);
-        Serial2.print(",");
-        Serial2.println(elevation);
-    }
-    else {
-      Serial2.println();
     }
 
-
+    gs232b.setPosition(azimuth, elevation);
 
   }
 }
@@ -299,6 +298,9 @@ void setup() {
   Serial.begin(115200);
   
   Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+
+  gs232b.init(&Serial2);
+
   Serial.println("Serial Txd is on pin: "+String(TX));
   Serial.println("Serial Rxd is on pin: "+String(RX));
 
