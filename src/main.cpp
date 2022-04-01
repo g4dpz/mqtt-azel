@@ -4,17 +4,20 @@
 #include <CSV_Parser.h>
 #include <math.h>
 
-const char* ssid = "SSID";
-const char* password = "WIFI_PWD";
+#define RXD2 16
+#define TXD2 17
 
-const char* mqtt_server = "SERVER_IP_OR_NAME";
-const char* mqtt_user = "MQTT_USER";
-const char* mqtt_pass = "MQTT_PASS!";
+const char* ssid = "badgersoft-iot";
+const char* password = "h4les0wen1234";
+
+const char* mqtt_server = "data.b2-space.com";
+const char* mqtt_user = "mosquitto";
+const char* mqtt_pass = "B2Space!";
 
 // set these to the observer location
-float refLat = 51.498;
-float refLong = -3.676;
-float refAlt = 200.0;
+float refLat = 52.4674;
+float refLong = -2.02150;
+float refAlt = 208.0;
 
 typedef struct vector8 {
   float x;
@@ -265,6 +268,7 @@ void callback(char* topic, byte* message, unsigned int length) {
         }
         Serial.print("Azimuth: ");
         Serial.println(azimuth);
+        Serial2.print(azimuth);
     }
 
     vector8 bma = normalizeVectorDiff(payPoint, obsPoint);
@@ -277,6 +281,11 @@ void callback(char* topic, byte* message, unsigned int length) {
         
         Serial.print("Elevation: ");
         Serial.println(elevation);
+        Serial2.print(",");
+        Serial2.println(elevation);
+    }
+    else {
+      Serial2.println();
     }
 
 
@@ -288,6 +297,11 @@ void callback(char* topic, byte* message, unsigned int length) {
 void setup() {
   
   Serial.begin(115200);
+  
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  Serial.println("Serial Txd is on pin: "+String(TX));
+  Serial.println("Serial Rxd is on pin: "+String(RX));
+
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
