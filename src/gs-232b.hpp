@@ -10,9 +10,11 @@ public:
     virtual ~GS232B() {};
     void init(HardwareSerial* serial);
     void setPosition(float azimuth, float elevation);
+    void setNorthPassing(bool northPassing);
 
 private:
     HardwareSerial* _serial;
+    bool _northPassing = false;
 };
 
 #endif // __GS232B_HPP__
