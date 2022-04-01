@@ -17,7 +17,7 @@ const char* mqtt_pass = "B2Space!";
 
 // set these to the observer location
 float refLat = 52.4674;
-float refLong = -2.02150;
+float refLong = -2.02;
 float refAlt = 208.0;
 
 typedef struct vector8 {

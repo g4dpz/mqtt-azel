@@ -19,9 +19,10 @@ void GS232B::setPosition(float azimuth, float elevation) {
         }
     }
 
-    _serial->print(azimuth);
-    _serial->print(",");
-    _serial->println(elevation);
+    _serial->print("W");
+    _serial->print((int)azimuth);
+    _serial->print(" ");
+    _serial->println((int)elevation);
 }
 
 void GS232B::setNorthPassing(bool northPassing) {
